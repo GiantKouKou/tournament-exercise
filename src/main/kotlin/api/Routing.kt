@@ -10,6 +10,7 @@ import org.koin.ktor.ext.inject
 import org.tournament.application.AddPlayer
 import org.tournament.domain.AllPlayers
 import org.tournament.domain.Player
+import org.tournament.domain.PlayerId
 import org.tournament.domain.PlayerNickname
 
 @Serializable
@@ -27,7 +28,7 @@ fun Application.configureRouting() {
         }
         post("/players") {
             val player = call.receive<PlayerApi>()
-            val playerAdded = addPlayer.run(Player(PlayerNickname(player.nickname)))
+            val playerAdded = addPlayer.run(Player(PlayerId.random(), PlayerNickname(player.nickname)))
             if (playerAdded.isSuccess)
                 call.respondText("Welcome to the tournament ${player.nickname}!!", status = HttpStatusCode.Created)
             else
