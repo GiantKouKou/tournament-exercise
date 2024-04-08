@@ -52,4 +52,24 @@ class AllPlayersInMemoryTest {
 
         assertEquals(listOf(toto, titi), result)
     }
+
+    @Test
+    fun `withId should return player if id exists`() {
+        val repository = AllPlayersInMemory()
+        val toto = Player(PlayerId.random(), PlayerNickname("toto"))
+        repository.add(toto)
+
+        val result = repository.withId(toto.id)
+
+        assertEquals(toto, result)
+    }
+
+    @Test
+    fun `withId should return null if id does not exist`() {
+        val repository = AllPlayersInMemory()
+
+        val result = repository.withId(PlayerId.random())
+
+        assertEquals(null, result)
+    }
 }

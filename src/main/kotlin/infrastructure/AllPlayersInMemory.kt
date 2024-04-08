@@ -20,4 +20,6 @@ class AllPlayersInMemory : AllPlayers {
     }
 
     override fun all(): List<Player> = repository.values.toList()
+
+    override fun withId(id: PlayerId): Player? = repository.get(id)
 }

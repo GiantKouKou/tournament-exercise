@@ -26,6 +26,15 @@ fun Application.configureRouting() {
         get("/players") {
             call.respond(allPlayers.all().map { PlayerApi(it.nickname.value) })
         }
+        get("/players/{id}") {
+            val playerId = call.parameters["id"]!!
+            val player = allPlayers.withId(PlayerId(playerId))
+            player?.let {
+                call.respond(PlayerApi(player.nickname.value))
+            } ?: run {
+                call.respondText("Player not found", status = HttpStatusCode.NotFound)
+            }
+        }
         post("/players") {
             val player = call.receive<PlayerApi>()
             val playerAdded = addPlayer.run(Player(PlayerId.random(), PlayerNickname(player.nickname)))

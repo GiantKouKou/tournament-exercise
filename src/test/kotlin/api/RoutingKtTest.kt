@@ -30,16 +30,22 @@ class RoutingKtTest {
                 json()
             }
         }
+
         client.get("/players").apply {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("[]", bodyAsText())
         }
+
         client.post("/players") {
             contentType(ContentType.Application.Json)
             setBody(PlayerApi("toto"))
         }.apply {
             assertEquals(HttpStatusCode.Created, status)
             assertEquals("Welcome to the tournament toto!!", bodyAsText())
+        }
+
+        client.get("/players/1").apply {
+            assertEquals(HttpStatusCode.NotFound, status)
         }
     }
 }
