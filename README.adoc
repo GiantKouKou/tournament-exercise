@@ -1,0 +1,14 @@
+= Tournament Exercise
+
+== Requirements
+
+- java 20
+- gradle
+
+== Build
+
+./gradlew build
+
+== Start server
+
+./gradlew run
