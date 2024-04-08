@@ -6,9 +6,11 @@
 - gradle
 
 == Build
-
+----
 ./gradlew build
+----
 
 == Start server
-
+----
 ./gradlew run
+----
