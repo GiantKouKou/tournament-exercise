@@ -22,4 +22,12 @@ class AllPlayersInMemory : AllPlayers {
     override fun all(): List<Player> = repository.values.toList()
 
     override fun withId(id: PlayerId): Player? = repository.get(id)
+
+    override fun update(player: Player): Result<Unit> {
+        return if (repository.containsKey(player.id)) {
+            repository[player.id] = player
+            Result.success(Unit)
+        } else
+            Result.failure(Error("Player not found"))
+    }
 }

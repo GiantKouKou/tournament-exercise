@@ -9,6 +9,7 @@ import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.tournament.api.configureRouting
 import org.tournament.application.AddPlayer
+import org.tournament.application.UpdatePlayerScore
 import org.tournament.domain.AllPlayers
 import org.tournament.infrastructure.AllPlayersInMemory
 
@@ -20,6 +21,7 @@ fun main() {
 val appModule = module {
     single<AllPlayers> { AllPlayersInMemory() }
     single { AddPlayer(get()) }
+    single { UpdatePlayerScore(get()) }
 }
 
 fun Application.module() {

@@ -73,4 +73,26 @@ class AllPlayersInMemoryTest {
 
         assertEquals(null, result)
     }
+
+    @Test
+    fun `update should return error if player is not found`() {
+        val repository = AllPlayersInMemory()
+        val toto = Player.new(PlayerNickname("toto"))
+
+        val result = repository.update(toto)
+
+        assertTrue(result.isFailure)
+    }
+
+    @Test
+    fun `update should return success if player exists`() {
+        val repository = AllPlayersInMemory()
+        val toto = Player.new(PlayerNickname("toto"))
+        repository.add(toto)
+
+        toto.score = PlayerScore(10)
+        val result = repository.update(toto)
+
+        assertTrue(result.isSuccess)
+    }
 }

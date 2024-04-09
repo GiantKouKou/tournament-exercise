@@ -6,7 +6,8 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
-import org.tournament.api.PlayerApi
+import org.tournament.api.CreatePlayerApi
+import org.tournament.api.UpdatePlayerScoreApi
 import org.tournament.api.configureRouting
 import org.tournament.configureContentNegotiation
 import org.tournament.configureKoin
@@ -16,7 +17,7 @@ import kotlin.test.assertEquals
 class RoutingKtTest {
 
     @Test
-    fun `should return empty array`() = testApplication {
+    fun `get players list should return empty array`() = testApplication {
         application {
             configureRouting()
             configureContentNegotiation()
@@ -30,7 +31,7 @@ class RoutingKtTest {
     }
 
     @Test
-    fun `should return created response`() = testApplication {
+    fun `create player should return created response`() = testApplication {
         application {
             configureRouting()
             configureContentNegotiation()
@@ -44,7 +45,7 @@ class RoutingKtTest {
 
         client.post("/players") {
             contentType(ContentType.Application.Json)
-            setBody(PlayerApi("toto"))
+            setBody(CreatePlayerApi("toto"))
         }.apply {
             assertEquals(HttpStatusCode.Created, status)
             assertEquals("Welcome to the tournament toto!!", bodyAsText())
@@ -52,7 +53,7 @@ class RoutingKtTest {
     }
 
     @Test
-    fun `should return not found response`() = testApplication {
+    fun `get single player should return not found response`() = testApplication {
         application {
             configureRouting()
             configureContentNegotiation()
@@ -60,6 +61,27 @@ class RoutingKtTest {
         }
 
         client.get("/players/1").apply {
+            assertEquals(HttpStatusCode.NotFound, status)
+        }
+    }
+
+    @Test
+    fun `update score should return not found response`() = testApplication {
+        application {
+            configureRouting()
+            configureContentNegotiation()
+            configureKoin()
+        }
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        client.put("/players/1/score") {
+            contentType(ContentType.Application.Json)
+            setBody(UpdatePlayerScoreApi(10))
+        }.apply {
             assertEquals(HttpStatusCode.NotFound, status)
         }
     }

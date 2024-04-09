@@ -8,13 +8,14 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.koin.ktor.ext.inject
 import org.tournament.application.AddPlayer
-import org.tournament.domain.AllPlayers
-import org.tournament.domain.Player
-import org.tournament.domain.PlayerId
-import org.tournament.domain.PlayerNickname
+import org.tournament.application.UpdatePlayerScore
+import org.tournament.domain.*
 
 @Serializable
 data class CreatePlayerApi(val nickname: String)
+
+@Serializable
+data class UpdatePlayerScoreApi(val score: Int)
 
 @Serializable
 data class PlayerApi(val id: String, val nickname: String, val score: Int)
@@ -24,6 +25,8 @@ fun Application.configureRouting() {
     val allPlayers by inject<AllPlayers>()
 
     val addPlayer by inject<AddPlayer>()
+
+    val updatePlayerScore by inject<UpdatePlayerScore>()
 
     routing {
         get("/players") {
@@ -45,6 +48,16 @@ fun Application.configureRouting() {
                 call.respondText("Welcome to the tournament ${player.nickname}!!", status = HttpStatusCode.Created)
             else
                 call.respondText("Player already registered ${player.nickname}!!", status = HttpStatusCode.Conflict)
+        }
+        put("/players/{id}/score") {
+            val playerId = call.parameters["id"]!!
+            val playerScore = call.receive<UpdatePlayerScoreApi>()
+            val playerUpdated = updatePlayerScore.run(PlayerId(playerId), PlayerScore(playerScore.score))
+            playerUpdated.onSuccess {
+                call.respond(it)
+            }.onFailure {
+                call.respondText("Player not found", status = HttpStatusCode.NotFound)
+            }
         }
     }
 }
