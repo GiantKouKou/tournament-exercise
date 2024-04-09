@@ -9,7 +9,7 @@ class AllPlayersInMemory : AllPlayers {
 
     private val repository = mutableMapOf<PlayerId, Player>()
 
-    override fun add(player: Player): Result<Player> {
+    override suspend fun add(player: Player): Result<Player> {
         return if (repository.containsKey(player.id))
             Result.failure(Error("Player already registered"))
         else if (repository.values.any { it.nickname == player.nickname })
@@ -21,18 +21,18 @@ class AllPlayersInMemory : AllPlayers {
         }
     }
 
-    override fun all(): List<Player> =
+    override suspend fun all(): List<Player> =
         repository.values.sortedBy { -it.score.value }.toList().mapIndexed { index, player ->
             Player(player.id, player.nickname, player.score, PlayerRank(index + 1))
         }
 
-    override fun withId(id: PlayerId): Player? {
+    override suspend fun withId(id: PlayerId): Player? {
         return repository.get(id)?. let {
             Player(it.id, it.nickname, it.score, getPlayerRank(it))
         }
     }
 
-    override fun update(player: Player): Result<Player> {
+    override suspend fun update(player: Player): Result<Player> {
         return if (repository.containsKey(player.id)) {
             repository[player.id] = player
             val playerRank = this.getPlayerRank(player)
@@ -41,7 +41,7 @@ class AllPlayersInMemory : AllPlayers {
             Result.failure(Error("Player not found"))
     }
 
-    override fun clear() {
+    override suspend fun clear() {
         repository.clear()
     }
 

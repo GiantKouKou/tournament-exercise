@@ -7,7 +7,7 @@ import org.tournament.domain.PlayerScore
 
 class UpdatePlayerScore(private val allPlayers: AllPlayers) {
 
-    fun run(playerId: PlayerId, playerScore: PlayerScore): Result<Player> {
+    suspend fun run(playerId: PlayerId, playerScore: PlayerScore): Result<Player> {
         val player = allPlayers.withId(playerId)
         return player?.let {
             player.score = playerScore

@@ -1,15 +1,17 @@
 package infrastructure
 
+import kotlinx.coroutines.runBlocking
 import org.tournament.domain.*
 import org.tournament.infrastructure.AllPlayersInMemory
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class AllPlayersInMemoryTest {
 
     @Test
-    fun `add should return success if player does not exist`() {
+    fun `add should return success if player does not exist`() = runBlocking {
         val repository = AllPlayersInMemory()
 
         val result = repository.add(Player.new(PlayerNickname("toto")))
@@ -18,7 +20,7 @@ class AllPlayersInMemoryTest {
     }
 
     @Test
-    fun `add should return player with its rank`() {
+    fun `add should return player with its rank`(): Unit = runBlocking {
         val repository = AllPlayersInMemory()
         val toto = Player.new(PlayerNickname("toto"))
         toto.score = PlayerScore(10)
@@ -32,7 +34,7 @@ class AllPlayersInMemoryTest {
     }
 
     @Test
-    fun `add should return failure if nickname already used`() {
+    fun `add should return failure if nickname already used`() = runBlocking {
         val repository = AllPlayersInMemory()
         repository.add(Player.new(PlayerNickname("toto")))
 
@@ -42,7 +44,7 @@ class AllPlayersInMemoryTest {
     }
 
     @Test
-    fun `add should return failure if id already registered`() {
+    fun `add should return failure if id already registered`() = runBlocking {
         val repository = AllPlayersInMemory()
         val playerId = PlayerId.random()
         repository.add(Player(playerId, PlayerNickname("toto"), PlayerScore(0), null))
@@ -53,7 +55,7 @@ class AllPlayersInMemoryTest {
     }
 
     @Test
-    fun `all should return all players ordered by rank`() {
+    fun `all should return all players ordered by rank`() = runBlocking {
         val repository = AllPlayersInMemory()
         val toto = Player.new(PlayerNickname("toto"))
         toto.score = PlayerScore(5)
@@ -68,7 +70,7 @@ class AllPlayersInMemoryTest {
     }
 
     @Test
-    fun `withId should return player if id exists`() {
+    fun `withId should return player if id exists`() = runBlocking {
         val repository = AllPlayersInMemory()
         val toto = Player.new(PlayerNickname("toto"))
         repository.add(toto).getOrThrow()
@@ -80,7 +82,7 @@ class AllPlayersInMemoryTest {
     }
 
     @Test
-    fun `withId should return null if id does not exist`() {
+    fun `withId should return null if id does not exist`() = runBlocking {
         val repository = AllPlayersInMemory()
 
         val result = repository.withId(PlayerId.random())
@@ -89,7 +91,7 @@ class AllPlayersInMemoryTest {
     }
 
     @Test
-    fun `update should return error if player is not found`() {
+    fun `update should return error if player is not found`() = runBlocking {
         val repository = AllPlayersInMemory()
         val toto = Player.new(PlayerNickname("toto"))
 
@@ -99,7 +101,7 @@ class AllPlayersInMemoryTest {
     }
 
     @Test
-    fun `update should return success if player exists`() {
+    fun `update should return success if player exists`() = runBlocking {
         val repository = AllPlayersInMemory()
         val toto = Player.new(PlayerNickname("toto"))
         repository.add(toto)
@@ -111,7 +113,7 @@ class AllPlayersInMemoryTest {
     }
 
     @Test
-    fun `update should return player with updated rank`() {
+    fun `update should return player with updated rank`(): Unit = runBlocking {
         val repository = AllPlayersInMemory()
         val toto = Player.new(PlayerNickname("toto"))
         toto.score = PlayerScore(10)
@@ -123,14 +125,15 @@ class AllPlayersInMemoryTest {
         titi.score = PlayerScore(12)
         val updatedTiti = repository.update(titi)
 
-        assertTrue(updatedTiti.isSuccess)
         updatedTiti.onSuccess {
             assertEquals(1, it.rank?.value)
+        }.onFailure {
+            fail("should be successful")
         }
     }
 
     @Test
-    fun `clear should remove all players`() {
+    fun `clear should remove all players`() = runBlocking {
         val repository = AllPlayersInMemory()
         val toto = Player.new(PlayerNickname("toto"))
         repository.add(toto)

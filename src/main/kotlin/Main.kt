@@ -1,5 +1,6 @@
 package org.tournament
 
+import com.mongodb.kotlin.client.coroutine.MongoClient
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -24,6 +25,11 @@ val appModule = module {
     single { UpdatePlayerScore(get()) }
 }
 
+val databaseModule = module {
+    single { MongoClient.create("mongodb://localhost:27017") }
+    single { get<MongoClient>().getDatabase("tournament") }
+}
+
 fun Application.module() {
     configureRouting()
     configureContentNegotiation()
@@ -38,6 +44,6 @@ fun Application.configureContentNegotiation() {
 
 fun Application.configureKoin() {
     install(Koin) {
-        modules(appModule)
+        modules(databaseModule, appModule)
     }
 }

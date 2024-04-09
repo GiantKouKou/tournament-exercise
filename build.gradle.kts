@@ -3,6 +3,7 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 val koin_version: String by project
+val kotest_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.23"
@@ -28,9 +29,18 @@ dependencies {
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
     implementation(platform("io.insert-koin:koin-bom:$koin_version"))
     implementation("io.insert-koin:koin-core")
+
+
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
+
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:$kotlin_version")
+    testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
+    testImplementation("io.kotest.extensions:kotest-assertions-ktor:${kotest_version}")
+    testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:${kotest_version}")
+    testImplementation("org.testcontainers:testcontainers:1.19.7")
+    testImplementation("org.testcontainers:mongodb:1.19.7")
 }
 
 application {
@@ -38,4 +48,8 @@ application {
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }

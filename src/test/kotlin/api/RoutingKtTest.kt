@@ -1,5 +1,6 @@
 package api
 
+import io.kotest.assertions.ktor.client.shouldHaveStatus
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -25,7 +26,7 @@ class RoutingKtTest {
         }
 
         client.get("/players").apply {
-            assertEquals(HttpStatusCode.OK, status)
+            shouldHaveStatus(HttpStatusCode.OK)
             assertEquals("[]", bodyAsText())
         }
     }
@@ -47,7 +48,7 @@ class RoutingKtTest {
             contentType(ContentType.Application.Json)
             setBody(CreatePlayerApi("toto"))
         }.apply {
-            assertEquals(HttpStatusCode.Created, status)
+            shouldHaveStatus(HttpStatusCode.Created)
             assertEquals("Welcome to the tournament toto!!", bodyAsText())
         }
     }
@@ -61,7 +62,7 @@ class RoutingKtTest {
         }
 
         client.get("/players/1").apply {
-            assertEquals(HttpStatusCode.NotFound, status)
+            shouldHaveStatus(HttpStatusCode.NotFound)
         }
     }
 
@@ -82,7 +83,7 @@ class RoutingKtTest {
             contentType(ContentType.Application.Json)
             setBody(UpdatePlayerScoreApi(10))
         }.apply {
-            assertEquals(HttpStatusCode.NotFound, status)
+            shouldHaveStatus(HttpStatusCode.NotFound)
         }
     }
 
@@ -95,7 +96,7 @@ class RoutingKtTest {
         }
 
         client.delete("/players").apply {
-            assertEquals(HttpStatusCode.NoContent, status)
+            shouldHaveStatus(HttpStatusCode.NoContent)
         }
     }
 }
