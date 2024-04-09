@@ -3,7 +3,6 @@
 == Requirements
 
 - java 20
-- gradle
 - docker
 
 == Build
