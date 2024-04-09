@@ -18,7 +18,7 @@ data class CreatePlayerApi(val nickname: String)
 data class UpdatePlayerScoreApi(val score: Int)
 
 @Serializable
-data class PlayerApi(val id: String, val nickname: String, val score: Int)
+data class PlayerApi(val id: String, val nickname: String, val score: Int, val rank: Int)
 
 fun Application.configureRouting() {
 
@@ -30,13 +30,14 @@ fun Application.configureRouting() {
 
     routing {
         get("/players") {
-            call.respond(allPlayers.all().map { PlayerApi(it.id.value, it.nickname.value, it.score.value) })
+            call.respond(
+                allPlayers.all().map { PlayerApi(it.id.value, it.nickname.value, it.score.value, it.rank?.value ?: 0) })
         }
         get("/players/{id}") {
             val playerId = call.parameters["id"]!!
             val player = allPlayers.withId(PlayerId(playerId))
             player?.let {
-                call.respond(PlayerApi(player.id.value, player.nickname.value, player.score.value))
+                call.respond(PlayerApi(player.id.value, player.nickname.value, player.score.value, it.rank?.value ?: 0))
             } ?: run {
                 call.respondText("Player not found", status = HttpStatusCode.NotFound)
             }
@@ -54,7 +55,7 @@ fun Application.configureRouting() {
             val playerScore = call.receive<UpdatePlayerScoreApi>()
             val playerUpdated = updatePlayerScore.run(PlayerId(playerId), PlayerScore(playerScore.score))
             playerUpdated.onSuccess {
-                call.respond(it)
+                call.respond(PlayerApi(it.id.value, it.nickname.value, it.score.value, it.rank?.value ?: 0))
             }.onFailure {
                 call.respondText("Player not found", status = HttpStatusCode.NotFound)
             }
