@@ -37,7 +37,7 @@ fun Application.configureRouting() {
         }
         post("/players") {
             val player = call.receive<PlayerApi>()
-            val playerAdded = addPlayer.run(Player(PlayerId.random(), PlayerNickname(player.nickname)))
+            val playerAdded = addPlayer.run(Player.new(PlayerNickname(player.nickname)))
             if (playerAdded.isSuccess)
                 call.respondText("Welcome to the tournament ${player.nickname}!!", status = HttpStatusCode.Created)
             else

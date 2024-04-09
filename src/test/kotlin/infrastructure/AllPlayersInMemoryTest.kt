@@ -3,6 +3,7 @@ package infrastructure
 import org.tournament.domain.Player
 import org.tournament.domain.PlayerId
 import org.tournament.domain.PlayerNickname
+import org.tournament.domain.PlayerScore
 import org.tournament.infrastructure.AllPlayersInMemory
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -14,7 +15,7 @@ class AllPlayersInMemoryTest {
     fun `add should return success if player does not exist`() {
         val repository = AllPlayersInMemory()
 
-        val result = repository.add(Player(PlayerId.random(), PlayerNickname("toto")))
+        val result = repository.add(Player.new(PlayerNickname("toto")))
 
         assertTrue(result.isSuccess)
     }
@@ -22,9 +23,9 @@ class AllPlayersInMemoryTest {
     @Test
     fun `add should return failure if nickname already used`() {
         val repository = AllPlayersInMemory()
-        repository.add(Player(PlayerId.random(), PlayerNickname("toto")))
+        repository.add(Player.new(PlayerNickname("toto")))
 
-        val result = repository.add(Player(PlayerId.random(), PlayerNickname("toto")))
+        val result = repository.add(Player.new(PlayerNickname("toto")))
 
         assertTrue(result.isFailure)
     }
@@ -33,9 +34,9 @@ class AllPlayersInMemoryTest {
     fun `add should return failure if id already registered`() {
         val repository = AllPlayersInMemory()
         val playerId = PlayerId.random()
-        repository.add(Player(playerId, PlayerNickname("toto")))
+        repository.add(Player(playerId, PlayerNickname("toto"), PlayerScore(0)))
 
-        val result = repository.add(Player(playerId, PlayerNickname("titi")))
+        val result = repository.add(Player(playerId, PlayerNickname("titi"), PlayerScore(10)))
 
         assertTrue(result.isFailure)
     }
@@ -43,8 +44,8 @@ class AllPlayersInMemoryTest {
     @Test
     fun `all should return all players`() {
         val repository = AllPlayersInMemory()
-        val toto = Player(PlayerId.random(), PlayerNickname("toto"))
-        val titi = Player(PlayerId.random(), PlayerNickname("titi"))
+        val toto = Player.new(PlayerNickname("toto"))
+        val titi = Player.new(PlayerNickname("titi"))
         repository.add(toto)
         repository.add(titi)
 
@@ -56,7 +57,7 @@ class AllPlayersInMemoryTest {
     @Test
     fun `withId should return player if id exists`() {
         val repository = AllPlayersInMemory()
-        val toto = Player(PlayerId.random(), PlayerNickname("toto"))
+        val toto = Player.new(PlayerNickname("toto"))
         repository.add(toto)
 
         val result = repository.withId(toto.id)

@@ -25,16 +25,17 @@ val appModule = module {
 fun Application.module() {
     configureRouting()
     configureContentNegotiation()
-    install(Koin) {
-        modules(appModule)
-    }
-    install(ContentNegotiation) {
-        json()
-    }
+    configureKoin()
 }
 
 fun Application.configureContentNegotiation() {
     install(ContentNegotiation) {
         json()
+    }
+}
+
+fun Application.configureKoin() {
+    install(Koin) {
+        modules(appModule)
     }
 }

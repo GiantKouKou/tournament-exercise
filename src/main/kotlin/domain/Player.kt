@@ -10,7 +10,18 @@ data class PlayerId(val value: String) {
     }
 }
 
+data class PlayerScore(val value: Int) {
+    init {
+        require(value >= 0)
+    }
+}
+
 class Player(
     val id: PlayerId,
-    val nickname: PlayerNickname
-)
+    val nickname: PlayerNickname,
+    var score: PlayerScore
+) {
+    companion object Factory {
+        fun new(nickname: PlayerNickname) = Player(PlayerId.random(), nickname, PlayerScore(0))
+    }
+}

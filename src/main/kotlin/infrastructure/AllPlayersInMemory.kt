@@ -10,9 +10,9 @@ class AllPlayersInMemory : AllPlayers {
 
     override fun add(player: Player): Result<Unit> {
         return if (repository.containsKey(player.id))
-            Result.failure(InternalError("Player already registered"))
+            Result.failure(Error("Player already registered"))
         else if (repository.values.any { it.nickname == player.nickname })
-            Result.failure(InternalError("Nickname already used"))
+            Result.failure(Error("Nickname already used"))
         else {
             repository[player.id] = player
             Result.success(Unit)
