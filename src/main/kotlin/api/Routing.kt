@@ -14,7 +14,10 @@ import org.tournament.domain.PlayerId
 import org.tournament.domain.PlayerNickname
 
 @Serializable
-data class PlayerApi(val nickname: String)
+data class CreatePlayerApi(val nickname: String)
+
+@Serializable
+data class PlayerApi(val id: String, val nickname: String, val score: Int)
 
 fun Application.configureRouting() {
 
@@ -24,19 +27,19 @@ fun Application.configureRouting() {
 
     routing {
         get("/players") {
-            call.respond(allPlayers.all().map { PlayerApi(it.nickname.value) })
+            call.respond(allPlayers.all().map { PlayerApi(it.id.value, it.nickname.value, it.score.value) })
         }
         get("/players/{id}") {
             val playerId = call.parameters["id"]!!
             val player = allPlayers.withId(PlayerId(playerId))
             player?.let {
-                call.respond(PlayerApi(player.nickname.value))
+                call.respond(PlayerApi(player.id.value, player.nickname.value, player.score.value))
             } ?: run {
                 call.respondText("Player not found", status = HttpStatusCode.NotFound)
             }
         }
         post("/players") {
-            val player = call.receive<PlayerApi>()
+            val player = call.receive<CreatePlayerApi>()
             val playerAdded = addPlayer.run(Player.new(PlayerNickname(player.nickname)))
             if (playerAdded.isSuccess)
                 call.respondText("Welcome to the tournament ${player.nickname}!!", status = HttpStatusCode.Created)
