@@ -3,7 +3,7 @@
 == Requirements
 
 - java 20
-- gradle
+- docker
 
 == Build
 ----
@@ -11,6 +11,13 @@
 ----
 
 == Start server
+
+.start mongo
+----
+docker run -p 27017:27017 mongo
+----
+
+.start server
 ----
 ./gradlew run
 ----

@@ -1,20 +1,41 @@
 package api
 
+import com.mongodb.kotlin.client.coroutine.MongoClient
+import io.kotest.assertions.ktor.client.shouldHaveStatus
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.application.*
 import io.ktor.server.testing.*
+import org.koin.dsl.module
+import org.koin.ktor.plugin.Koin
+import org.testcontainers.containers.MongoDBContainer
 import org.tournament.api.CreatePlayerApi
 import org.tournament.api.UpdatePlayerScoreApi
 import org.tournament.api.configureRouting
+import org.tournament.appModule
 import org.tournament.configureContentNegotiation
-import org.tournament.configureKoin
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class RoutingKtTest {
+
+    private val mongo = MongoDBContainer("mongo:latest").apply {
+        startupAttempts = 1
+    }
+    val mongoRunning = mongo.start()
+
+    fun Application.configureKoin() {
+        install(Koin) {
+            modules(
+                module {
+                    single { MongoClient.create(mongo.replicaSetUrl) }
+                    single { get<MongoClient>().getDatabase("tournament") }
+                }, appModule)
+        }
+    }
 
     @Test
     fun `get players list should return empty array`() = testApplication {
@@ -25,7 +46,7 @@ class RoutingKtTest {
         }
 
         client.get("/players").apply {
-            assertEquals(HttpStatusCode.OK, status)
+            shouldHaveStatus(HttpStatusCode.OK)
             assertEquals("[]", bodyAsText())
         }
     }
@@ -47,7 +68,7 @@ class RoutingKtTest {
             contentType(ContentType.Application.Json)
             setBody(CreatePlayerApi("toto"))
         }.apply {
-            assertEquals(HttpStatusCode.Created, status)
+            shouldHaveStatus(HttpStatusCode.Created)
             assertEquals("Welcome to the tournament toto!!", bodyAsText())
         }
     }
@@ -61,7 +82,7 @@ class RoutingKtTest {
         }
 
         client.get("/players/1").apply {
-            assertEquals(HttpStatusCode.NotFound, status)
+            shouldHaveStatus(HttpStatusCode.NotFound)
         }
     }
 
@@ -82,7 +103,7 @@ class RoutingKtTest {
             contentType(ContentType.Application.Json)
             setBody(UpdatePlayerScoreApi(10))
         }.apply {
-            assertEquals(HttpStatusCode.NotFound, status)
+            shouldHaveStatus(HttpStatusCode.NotFound)
         }
     }
 
@@ -95,7 +116,7 @@ class RoutingKtTest {
         }
 
         client.delete("/players").apply {
-            assertEquals(HttpStatusCode.NoContent, status)
+            shouldHaveStatus(HttpStatusCode.NoContent)
         }
     }
 }
