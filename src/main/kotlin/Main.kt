@@ -12,7 +12,7 @@ import org.tournament.api.configureRouting
 import org.tournament.application.AddPlayer
 import org.tournament.application.UpdatePlayerScore
 import org.tournament.domain.AllPlayers
-import org.tournament.infrastructure.AllPlayersInMemory
+import org.tournament.infrastructure.AllPlayersMongo
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
@@ -20,7 +20,7 @@ fun main() {
 }
 
 val appModule = module {
-    single<AllPlayers> { AllPlayersInMemory() }
+    single<AllPlayers> { AllPlayersMongo(get()) }
     single { AddPlayer(get()) }
     single { UpdatePlayerScore(get()) }
 }

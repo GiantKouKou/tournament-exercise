@@ -4,6 +4,7 @@ val kotlin_version: String by project
 val logback_version: String by project
 val koin_version: String by project
 val kotest_version: String by project
+val testcontainers_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.23"
@@ -36,11 +37,11 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:$kotlin_version")
-    testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
-    testImplementation("io.kotest.extensions:kotest-assertions-ktor:${kotest_version}")
-    testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:${kotest_version}")
-    testImplementation("org.testcontainers:testcontainers:1.19.7")
-    testImplementation("org.testcontainers:mongodb:1.19.7")
+    testImplementation("io.kotest:kotest-runner-junit5:${kotest_version}")
+    testImplementation("io.kotest.extensions:kotest-assertions-ktor:2.0.0")
+    testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:2.0.0")
+    testImplementation("org.testcontainers:testcontainers:${testcontainers_version}")
+    testImplementation("org.testcontainers:mongodb:${testcontainers_version}")
 }
 
 application {
