@@ -60,5 +60,9 @@ fun Application.configureRouting() {
                 call.respondText("Player not found", status = HttpStatusCode.NotFound)
             }
         }
+        delete("/players") {
+            allPlayers.clear()
+            call.respond(HttpStatusCode.NoContent)
+        }
     }
 }

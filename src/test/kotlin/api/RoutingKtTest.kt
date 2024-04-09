@@ -85,4 +85,17 @@ class RoutingKtTest {
             assertEquals(HttpStatusCode.NotFound, status)
         }
     }
+
+    @Test
+    fun `clear should return no content`() = testApplication {
+        application {
+            configureRouting()
+            configureContentNegotiation()
+            configureKoin()
+        }
+
+        client.delete("/players").apply {
+            assertEquals(HttpStatusCode.NoContent, status)
+        }
+    }
 }

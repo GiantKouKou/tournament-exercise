@@ -41,6 +41,10 @@ class AllPlayersInMemory : AllPlayers {
             Result.failure(Error("Player not found"))
     }
 
+    override fun clear() {
+        repository.clear()
+    }
+
     private fun getPlayerRank(player: Player): PlayerRank =
         PlayerRank(repository.values.sortedBy { -it.score.value }.indexOf(player) + 1)
 }

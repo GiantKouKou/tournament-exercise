@@ -128,4 +128,15 @@ class AllPlayersInMemoryTest {
             assertEquals(1, it.rank?.value)
         }
     }
+
+    @Test
+    fun `clear should remove all players`() {
+        val repository = AllPlayersInMemory()
+        val toto = Player.new(PlayerNickname("toto"))
+        repository.add(toto)
+
+        repository.clear()
+
+        assertEquals(0, repository.all().size)
+    }
 }
