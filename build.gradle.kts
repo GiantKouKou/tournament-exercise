@@ -30,13 +30,14 @@ dependencies {
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
     implementation(platform("io.insert-koin:koin-bom:$koin_version"))
     implementation("io.insert-koin:koin-core")
+    testImplementation("io.insert-koin:koin-test-junit5:$koin_version")
 
 
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
 
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:$kotlin_version")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
     testImplementation("io.kotest:kotest-runner-junit5:${kotest_version}")
     testImplementation("io.kotest.extensions:kotest-assertions-ktor:2.0.0")
     testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:2.0.0")
