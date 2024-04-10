@@ -1,7 +1,9 @@
 openapi: 3.0.3
 info:
-  version: '2024-04-10T13:22:40Z'
+  version: "1"
   title: Tournament Manager
+servers:
+  - url: http://localhost:8080/
 paths:
   /players:
     get:
@@ -16,7 +18,7 @@ paths:
     post:
       description: Register a player to the tournament
       requestBody:
-        description: Create a new pet in the store
+        description: Player nickname
         content:
           application/json:
             schema:
@@ -62,7 +64,7 @@ paths:
             type: string
             format: uuid
       requestBody:
-        description: Create a new pet in the store
+        description: New player score
         content:
           application/json:
             schema:
@@ -84,7 +86,7 @@ components:
       type: object
       properties:
         score:
-          type: string
+          type: integer
     Player:
       allOf:
         - type: object
@@ -93,9 +95,9 @@ components:
               type: string
             rank:
               type: integer
-        - $ref: "#/components/schemas/PlayerNickname"
-        - $ref: "#/components/schemas/PlayerScore"
+        - $ref: '#/components/schemas/PlayerNickname'
+        - $ref: '#/components/schemas/PlayerScore'
     Players:
       type: array
       items:
-        $ref: "#/components/schemas/Player"
+        $ref: '#/components/schemas/Player'

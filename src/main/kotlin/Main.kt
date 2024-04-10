@@ -6,6 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.tournament.api.configureRouting
@@ -31,6 +32,9 @@ val databaseModule = module {
 }
 
 fun Application.module() {
+    install(CORS) {
+        anyHost()
+    }
     configureRouting()
     configureContentNegotiation()
     configureKoin()
