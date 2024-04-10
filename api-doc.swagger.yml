@@ -1,0 +1,101 @@
+openapi: 3.0.3
+info:
+  version: '2024-04-10T13:22:40Z'
+  title: Tournament Manager
+paths:
+  /players:
+    get:
+      description: List all players registered to the tournament, ordered by score
+      responses:
+        '200':
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Players'
+    post:
+      description: Register a player to the tournament
+      requestBody:
+        description: Create a new pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerNickname'
+        required: true
+      responses:
+        '201':
+          description: Player created
+    delete:
+      description: Remove all players from tournament
+      responses:
+        '204':
+          description: Tournament cleared
+  /players/{id}:
+    get:
+      description: Get the details of a player
+      parameters:
+        - name: id
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Player found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        '404':
+          description: Player not found
+  /players/{id}/score:
+    put:
+      description: Update the score of a player
+      parameters:
+        - name: id
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Create a new pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerScore'
+        required: true
+      responses:
+        '200':
+          description: Score updated
+        '404':
+          description: Player not found
+components:
+  schemas:
+    PlayerNickname:
+      type: object
+      properties:
+        nickname:
+          type: string
+    PlayerScore:
+      type: object
+      properties:
+        score:
+          type: string
+    Player:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+            rank:
+              type: integer
+        - $ref: "#/components/schemas/PlayerNickname"
+        - $ref: "#/components/schemas/PlayerScore"
+    Players:
+      type: array
+      items:
+        $ref: "#/components/schemas/Player"
